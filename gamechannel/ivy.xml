@@ -35,6 +35,7 @@
         <dependency org="org.slf4j" name="slf4j-log4j12" rev="1.6.3" conf="default->default"/>
         <dependency org="com.sun.jersey" name="jersey-client" rev="1.13" conf="default->default"/>
         <dependency org="javax.servlet" name="servlet-api" rev="2.5" conf="default->default"/>
+        <dependency org="commons-lang" name="commons-lang" rev="2.6" conf="default->default"/>
     </dependencies>
 	
 </ivy-module>
