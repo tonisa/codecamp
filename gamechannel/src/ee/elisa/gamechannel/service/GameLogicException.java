@@ -1,22 +1,22 @@
 package ee.elisa.gamechannel.service;
 
-public class ServiceException extends Exception {
+public class GameLogicException extends Exception {
 
-	public ServiceException() {
+	public GameLogicException() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public ServiceException(String message) {
+	public GameLogicException(String message) {
 		super(message);
 		// TODO Auto-generated constructor stub
 	}
 
-	public ServiceException(Throwable cause) {
+	public GameLogicException(Throwable cause) {
 		super(cause);
 		// TODO Auto-generated constructor stub
 	}
 
-	public ServiceException(String message, Throwable cause) {
+	public GameLogicException(String message, Throwable cause) {
 		super(message, cause);
 		// TODO Auto-generated constructor stub
 	}

@@ -1,11 +1,17 @@
-package ee.elisa.gamechannel.service;
+package ee.elisa.gamechannel.model;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement()
 public class PositionedShip {
 	protected int size;
 	protected int cornerX; // left upper corner X
 	protected int cornerY; // left upper corner X
 	protected boolean horizontal; // horizontal (true) or vertical ship
 
+	public PositionedShip(){		
+	}
+	
 	public PositionedShip(int size, int cornerX, int cornerY, boolean horizontal) {
 		super();
 		this.size = size;
@@ -36,5 +42,10 @@ public class PositionedShip {
 	}
 	public void setHorizontal(boolean horizontal) {
 		this.horizontal = horizontal;
+	}
+	@Override
+	public String toString() {
+		return "PositionedShip [size=" + size + ", cornerX=" + cornerX
+				+ ", cornerY=" + cornerY + ", horizontal=" + horizontal + "]";
 	}
 }

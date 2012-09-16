@@ -12,6 +12,8 @@ import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 
 import ee.elisa.gamechannel.rest.resource.GameResource;
 import ee.elisa.gamechannel.rest.resource.RootResource;
+import ee.elisa.gamechannel.rest.resource.SettingsResource;
+import ee.elisa.gamechannel.util.Random;
 
 public class GuiceServletConfig extends GuiceServletContextListener {
     @Override
@@ -21,7 +23,8 @@ public class GuiceServletConfig extends GuiceServletContextListener {
             protected void configureServlets() {
                 bind(RootResource.class);
                 bind(GameResource.class);
-                // bind(JAXBJsonContextResolver.class);
+                bind(SettingsResource.class);
+                bind(Random.class);
 
                 // Servlet init params
                 final Map<String, String> params = new HashMap<String, String>();
