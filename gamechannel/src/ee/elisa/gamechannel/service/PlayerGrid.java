@@ -1,8 +1,17 @@
 package ee.elisa.gamechannel.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import ee.elisa.gamechannel.model.PositionedShip;
+import ee.elisa.gamechannel.model.HitCell;
 
 public class PlayerGrid {
+
+	// marks hitted cell in grid
+	
+	public static final int HIT = 8888;
+	
 	public int size;
 	public int[][] grid;
 
@@ -156,10 +165,10 @@ public class PlayerGrid {
 	public int getSize() {
 		return size;
 	}
-
+	
 	protected boolean isHit(int x, int y){
-		if (grid[x][y] > 0 && grid[x][y]<999){
-			grid[x][y] = 999;
+		if (grid[x][y] > 0 && grid[x][y]<HIT){
+			grid[x][y] = HIT;
 			return true;
 		}
 		return false;
@@ -172,4 +181,15 @@ public class PlayerGrid {
 		return false;
 	}
 
+	public List<HitCell> getCellHits() {
+		List<HitCell> out = new ArrayList<HitCell>();
+		for (int x = 0; x < getSize(); x++) {
+			for (int y = 0; y < getSize(); y++) {
+				if (grid[x][y] == HIT) {
+					out.add(new HitCell(x, y));
+				}
+			}
+		}
+		return out;
+	}
 }

@@ -9,6 +9,7 @@ import com.google.inject.Scopes;
 import com.google.inject.name.Names;
 
 import ee.elisa.gamechannel.service.GameService;
+import ee.elisa.gamechannel.util.Random;
 
 public class GuiceModule extends AbstractModule {
     private static final Logger LOG = LoggerFactory.getLogger(GuiceModule.class);
@@ -18,15 +19,8 @@ public class GuiceModule extends AbstractModule {
         // DOMConfigurator.configure(this.getClass().getClassLoader().getResource("game-log4j.xml"));
 
     	bind(GameService.class).asEagerSingleton();
+        bind(Random.class);
     	
-        LOG.info("Starting Offer module ...");
-
-        // Conf
-
-        // Data source pool
-        // Names.bindProperties(binder(),
-           //  Util.loadProperties(this.getClass().getClassLoader(), "offer-datasource.properties"));
-        
-        LOG.info("Offer module started.");
+        LOG.info("Starting gamechannel ...");
     }
 }

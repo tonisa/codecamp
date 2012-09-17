@@ -25,6 +25,7 @@ import ee.elisa.gamechannel.model.BombingResult;
 import ee.elisa.gamechannel.model.GameConfiguration;
 import ee.elisa.gamechannel.model.GameStatus;
 import ee.elisa.gamechannel.model.Player;
+import ee.elisa.gamechannel.model.PlayerRank;
 import ee.elisa.gamechannel.model.PlayerStatus;
 import ee.elisa.gamechannel.model.PlayersStatus;
 import ee.elisa.gamechannel.model.PositionedShip;
@@ -82,6 +83,12 @@ public class GameResource {
 	public PlayersStatus getPlayersStatus(@PathParam("game_id") Integer id) {
 		Game game = games.getGameById(id);
 		return new PlayersStatus(game);
+	}
+
+	@GET
+	@Path("{game_id}/ranks")
+	public List<PlayerRank> getPlayerRanks(@PathParam("game_id") Integer id) {
+		return games.getPlayerRanks(id);
 	}
 	
 	@GET

@@ -28,7 +28,6 @@ public class GuiceServletConfig extends GuiceServletContextListener {
                 bind(RootResource.class);
                 bind(GameResource.class);
                 bind(SettingsResource.class);
-                bind(Random.class);
 
                 // Servlet init params
                 final Map<String, String> params = new HashMap<String, String>();

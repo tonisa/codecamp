@@ -12,6 +12,7 @@ import java.util.Map.Entry;
 
 import ee.elisa.gamechannel.model.GameConfiguration;
 import ee.elisa.gamechannel.model.GameStatus;
+import ee.elisa.gamechannel.model.PlayerRank;
 import ee.elisa.gamechannel.model.ShipsSettings;
 import ee.elisa.gamechannel.util.Random;
 
@@ -154,5 +155,17 @@ public class Game {
 			playerList.add(entry.getValue());			
 		}
 		return playerList;
+	}
+
+	@Deprecated
+	public List<PlayerRank> getPlayerRanks() {
+		List<PlayerGameSession> players = getPlayers();
+		Collections.sort(players, new PlayerGameSessionComparator());
+		List<PlayerRank> ranks = new ArrayList<PlayerRank>();
+		int rank = 1;
+		for(PlayerGameSession player:players){
+			ranks.add(new PlayerRank(player,rank++));
+		}
+		return ranks;
 	}
 }

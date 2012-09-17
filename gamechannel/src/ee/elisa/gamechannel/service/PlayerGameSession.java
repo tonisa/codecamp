@@ -1,6 +1,7 @@
 package ee.elisa.gamechannel.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -9,6 +10,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import ee.elisa.gamechannel.Settings;
+import ee.elisa.gamechannel.model.HitCell;
 import ee.elisa.gamechannel.model.PositionedShip;
 import ee.elisa.gamechannel.util.Random;
 
@@ -30,7 +32,9 @@ public class PlayerGameSession {
 	@XmlElement
 	protected int hitsPossible;
 	@XmlElement
-	protected boolean hasShipsAlive;
+	protected boolean hasShipsAlive;	
+	@XmlElement
+	protected Date timeLost;
 
 	public PlayerGameSession(){		
 	}
@@ -181,6 +185,19 @@ public class PlayerGameSession {
 		
 		if (gotHits>=hitsPossible){
 			hasShipsAlive = false;
+			setTimeLost(new Date());
 		}
+	}
+	
+	public List<HitCell> getCellHits(){
+		return grid.getCellHits();
+	}
+
+	public Date getTimeLost() {
+		return timeLost;
+	}
+
+	public void setTimeLost(Date timeLost) {
+		this.timeLost = timeLost;
 	}
 }

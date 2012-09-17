@@ -1,6 +1,7 @@
 package ee.elisa.gamechannel.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,7 @@ import com.sun.jersey.api.NotFoundException;
 
 import ee.elisa.gamechannel.model.GameConfiguration;
 import ee.elisa.gamechannel.model.GameStatus;
+import ee.elisa.gamechannel.model.PlayerRank;
 import ee.elisa.gamechannel.model.ShipsSettings;
 
 public class GameService {
@@ -110,6 +112,23 @@ public class GameService {
 		
 		int hitCount = game.shoot(x,y, player);
 		return hitCount;
+	}
+
+	public List<PlayerRank> getPlayerRanks(Integer id) {
+		Game game = games.get(id);
+		if (game == null) {
+			throw new NotFoundException("No such game");
+		}
+		List<PlayerGameSession> players = game.getPlayers();
+
+		Collections.sort(players, new PlayerGameSessionComparator());
+
+		List<PlayerRank> ranks = new ArrayList<PlayerRank>();
+		int rank = 1;
+		for (PlayerGameSession player : players) {
+			ranks.add(new PlayerRank(player, rank++));
+		}
+		return ranks;
 	}
 
 }

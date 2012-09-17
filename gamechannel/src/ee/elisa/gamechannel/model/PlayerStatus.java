@@ -1,5 +1,7 @@
 package ee.elisa.gamechannel.model;
 
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlRootElement;
 
 import ee.elisa.gamechannel.service.Game;
@@ -16,6 +18,7 @@ public class PlayerStatus {
 	private int earnedHits;
 	private int hits;
 	private boolean shipsAlive;
+	private List<HitCell> hitCells;
 
 	public PlayerStatus(){		
 	}
@@ -30,7 +33,7 @@ public class PlayerStatus {
 		setEarnedHits(playerSession.getEarnedHits());
 		setHits(playerSession.getHits());
 		setShipsAlive(playerSession.hasShipsAlive());
-		
+		setHitCells(playerSession.getCellHits());
 	}
 
 	public GameConfiguration getGameStatus() {
@@ -95,6 +98,14 @@ public class PlayerStatus {
 
 	public boolean isShipsAlive() {
 		return shipsAlive;
+	}
+
+	public List<HitCell> getHitCells() {
+		return hitCells;
+	}
+
+	public void setHitCells(List<HitCell> hitCells) {
+		this.hitCells = hitCells;
 	}
 
 }
