@@ -16,6 +16,7 @@ import ee.elisa.gamechannel.rest.resource.SettingsResource;
 import ee.elisa.gamechannel.util.Random;
 
 public class GuiceServletConfig extends GuiceServletContextListener {
+
     @Override
     protected Injector getInjector() {
         return Guice.createInjector(new GuiceModule(), new JerseyServletModule() {
@@ -29,7 +30,7 @@ public class GuiceServletConfig extends GuiceServletContextListener {
                 // Servlet init params
                 final Map<String, String> params = new HashMap<String, String>();
                 params.put(FeaturesAndProperties.FEATURE_FORMATTED, Boolean.TRUE.toString());
-                serve("/*").with(GuiceContainer.class, params);
+                serve("/rest/*").with(GuiceContainer.class, params);
                 super.configureServlets();
             }
         });
