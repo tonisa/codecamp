@@ -16,7 +16,7 @@ import ee.elisa.gamechannel.util.Random;
 @XmlAccessorType(XmlAccessType.NONE)
 public class PlayerGameSession {
 
-	protected PlayerGrid grid;
+	public PlayerGrid grid;
 	protected List<PositionedShip> ships;
 	@XmlElement
 	protected boolean shipsPlaced;

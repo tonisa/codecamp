@@ -1,5 +1,6 @@
 package ee.elisa.gamechannel.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,7 +11,6 @@ import com.sun.jersey.api.NotFoundException;
 
 import ee.elisa.gamechannel.model.GameConfiguration;
 import ee.elisa.gamechannel.model.GameStatus;
-import ee.elisa.gamechannel.model.Player;
 import ee.elisa.gamechannel.model.ShipsSettings;
 
 public class GameService {
@@ -53,8 +53,18 @@ public class GameService {
 	}
 
 	public List<GameConfiguration> getListing(GameStatus running) {
-		// TODO Auto-generated method stub
-		return null;
+		if( games != null && games.size() > 0){
+			List<GameConfiguration> theGames = new ArrayList<GameConfiguration>();
+			for( Map.Entry<Integer, Game> it : games.entrySet()){
+					Integer id = it.getKey();
+					Game game = it.getValue();
+					if( game.getStatus().equals( running)){
+						theGames.add(game.getSettings());
+					}
+			}
+			return theGames;
+		} else
+			return null;
 	}
 
 	public void joinGame(Integer id, String player, ShipsSettings ships) throws ServiceException, PlayerGridException {

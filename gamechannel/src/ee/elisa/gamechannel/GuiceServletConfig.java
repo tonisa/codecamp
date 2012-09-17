@@ -3,6 +3,9 @@ package ee.elisa.gamechannel;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
+
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.servlet.GuiceServletContextListener;
@@ -30,9 +33,22 @@ public class GuiceServletConfig extends GuiceServletContextListener {
                 // Servlet init params
                 final Map<String, String> params = new HashMap<String, String>();
                 params.put(FeaturesAndProperties.FEATURE_FORMATTED, Boolean.TRUE.toString());
-                serve("/rest/*").with(GuiceContainer.class, params);
+                serve("/api/*").with(GuiceContainer.class, params);
                 super.configureServlets();
             }
         });
+    }
+    
+    @Override
+    public void contextInitialized(ServletContextEvent servletContextEvent) {
+    	ServletContext sc = servletContextEvent.getServletContext();
+    	sc.setAttribute(Injector.class.getName(), getInjector());
+    }
+    
+    @Override
+    public void contextDestroyed(ServletContextEvent servletContextEvent) {
+    	ServletContext sc = servletContextEvent.getServletContext();
+    	sc.removeAttribute(Injector.class.getName());
+    	super.contextDestroyed(servletContextEvent);
     }
 }
