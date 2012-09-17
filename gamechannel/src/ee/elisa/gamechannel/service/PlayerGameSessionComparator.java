@@ -16,7 +16,7 @@ public class PlayerGameSessionComparator implements Comparator<PlayerGameSession
 			return o1.hasShipsAlive()?1:-1;
 		}
 
-		if (o1.hasShipsAlive){
+		if (o1.hasShipsAlive()){
 			return new Integer(o1.getEarnedHits()).compareTo(o2.getEarnedHits());
 		} else {
 			return o1.getTimeLost().compareTo(o2.getTimeLost());

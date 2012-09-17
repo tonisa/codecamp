@@ -73,6 +73,13 @@ public class GameResource {
 	}
 
 	@GET
+	@Path("{game_id}/auto")
+	public GameConfiguration initAutomaticGame(@PathParam("game_id") Integer id)
+			throws NotFoundException, ServiceException {
+		return games.initAutomaticGame(id);
+	}
+	
+	@GET
 	@Path("{game_id}")
 	public GameConfiguration getById(@PathParam("game_id") Integer id) {
 		return games.getGameById(id).getSettings();

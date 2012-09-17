@@ -131,4 +131,14 @@ public class GameService {
 		return ranks;
 	}
 
+	public GameConfiguration initAutomaticGame(Integer id) throws ServiceException {
+		Game game = games.get(id);
+		if (game == null) {
+			throw new NotFoundException("No such game");
+		}
+		game.startAutomaticGame();
+		
+		return game.getSettings();
+	}
+
 }

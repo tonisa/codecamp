@@ -9,6 +9,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import ee.elisa.gamechannel.model.GameConfiguration;
 import ee.elisa.gamechannel.model.GameStatus;
@@ -16,13 +18,19 @@ import ee.elisa.gamechannel.model.PlayerRank;
 import ee.elisa.gamechannel.model.ShipsSettings;
 import ee.elisa.gamechannel.util.Random;
 
-public class Game {
+public class Game extends TimerTask {
 
 	protected GameConfiguration settings;
 	protected Map<String, PlayerGameSession> players;
 	protected Deque<String> playerOrder;
+	protected boolean automaticPlay;
+	private Timer timer;
+	private int x;
+	private Random rnd;
 
 	public Game(GameConfiguration settings) {
+		automaticPlay = false;
+		timer = null;
 		this.settings = settings;
 		this.settings.playersTotal = 0;
 		this.settings.playersActive = 0;
@@ -119,6 +127,8 @@ public class Game {
 	public int shoot(int x, int y, String player) throws GameLogicException {
 		int hitCount = 0;
 
+		System.out.println(player+" shoots at "+x+","+y);
+		
 		if (!GameStatus.RUNNING.equals(settings.status)) {
 			throw new GameLogicException(
 					"Cannot shoot, game not in RUNNING state");
@@ -167,5 +177,39 @@ public class Game {
 			ranks.add(new PlayerRank(player,rank++));
 		}
 		return ranks;
+	}
+
+	public void startAutomaticGame() throws ServiceException {
+		if (automaticPlay){
+			return;
+		}
+		
+		startGame();
+		
+		automaticPlay = true;
+		rnd = new Random();
+		timer = new Timer();
+		timer.scheduleAtFixedRate(this, 2000, 100);
+	}
+
+	// body for timer task
+	@Override
+	public void run() {
+		if (GameStatus.FINISHED.equals(settings.status) && timer != null) {
+			System.out.println("Closing autoplay");
+			this.cancel();
+			automaticPlay = false;
+			return;
+		}
+
+		String player = getCurrentPlayer();
+		
+		int y = rnd.getInt(0, getSettings().getGridSize()-1), x = rnd.getInt(0, settings.getGridSize()-1);
+		
+		try {
+			shoot(x,y,player);
+		} catch (GameLogicException e) {
+			e.printStackTrace();
+		}		
 	}
 }

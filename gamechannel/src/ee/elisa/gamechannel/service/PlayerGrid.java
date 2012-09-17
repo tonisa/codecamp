@@ -10,7 +10,7 @@ public class PlayerGrid {
 
 	// marks hitted cell in grid
 	
-	public static final int HIT = 8888;
+	public static final int HIT = 99;
 	
 	public int size;
 	public int[][] grid;
