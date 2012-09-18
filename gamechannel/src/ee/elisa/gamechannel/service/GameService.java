@@ -8,13 +8,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import javax.ws.rs.WebApplicationException;
+
 import com.google.inject.Inject;
-import com.sun.jersey.api.NotFoundException;
 
 import ee.elisa.gamechannel.model.GameConfiguration;
 import ee.elisa.gamechannel.model.GameStatus;
 import ee.elisa.gamechannel.model.PlayerRank;
 import ee.elisa.gamechannel.model.ShipsSettings;
+import ee.elisa.gamechannel.rest.HTTPException;
 
 public class GameService {
 
@@ -34,91 +36,100 @@ public class GameService {
 		}
 	}
 
-	public GameConfiguration startGame(Integer id) throws NotFoundException, ServiceException {
+	public GameConfiguration startGame(Integer id) throws WebApplicationException {
 		Game game = games.get(id);
 		if (game == null){
-			throw new NotFoundException("No such game");
+			throw new HTTPException.NotFoundException("Game id "+id+" not valid");
 		}		
-		game.startGame();		
+		try {
+			game.startGame();
+		} catch (ServiceException e) {
+			throw new HTTPException.ForbiddenException("Game cannot be started",e);
+		}		
 		return game.settings;
 	}
 
-	public Game getGameById(Integer id) throws NotFoundException {
-		// TODO Auto-generated method stub
-		logger.info("getById "+id+" "+this);
+	public Game getGameById(Integer id) throws HTTPException.NotFoundException {
 		Game game = games.get(id);
 		if (game == null){
-			throw new NotFoundException("No such game");
+			throw new HTTPException.NotFoundException("Game id "+id+" not valid");
 		}		
 		
-		// return new GameConfiguration(id, "good one", 10, "system");
 		return game;
 	}
 
-	public List<GameConfiguration> getListing(GameStatus running) {
-		if( games != null && games.size() > 0){
-			List<GameConfiguration> theGames = new ArrayList<GameConfiguration>();
-			for( Map.Entry<Integer, Game> it : games.entrySet()){
-					Integer id = it.getKey();
-					Game game = it.getValue();
-					if( game.getStatus().equals( running)){
-						theGames.add(game.getSettings());
-					}
+	public List<GameConfiguration> getListing(GameStatus expectedStatus) {
+		List<GameConfiguration> theGames = new ArrayList<GameConfiguration>();
+		if (games != null) {
+			for (Map.Entry<Integer, Game> it : games.entrySet()) {
+				Game game = it.getValue();
+				if (game.getStatus().equals(expectedStatus)) {
+					theGames.add(game.getSettings());
+				}
 			}
-			return theGames;
-		} else
-			return null;
+		}
+		return theGames;
 	}
 
-	public void joinGame(Integer id, String player, ShipsSettings ships) throws ServiceException, PlayerGridException {
-		Game game = games.get(id);
+	public void joinGame(Integer gameId, String player, ShipsSettings ships) throws WebApplicationException {
+		Game game = games.get(gameId);
 		if (game == null){
-			throw new NotFoundException("No such game");
+			throw new HTTPException.NotFoundException("Game id "+gameId+" not valid");
 		}		
-		game.addPlayer(player, ships);
-		return;
+		try {
+			game.addPlayer(player, ships);
+		} catch (ServiceException e) {
+			throw new HTTPException.ForbiddenException("Player already in game", e);
+		} catch (PlayerGridException e) {
+			throw new HTTPException.ForbiddenException(e);
+		}
 	}
 
-	public PlayerGameSession getGamePlayer(Integer id, String player) {
+	public PlayerGameSession getGamePlayer(Integer id, String player) throws HTTPException.NotFoundException {
 		Game game = games.get(id);
 		if (game == null){
-			throw new NotFoundException("No such game");
+			throw new HTTPException.NotFoundException("No such game");
 		}
 		PlayerGameSession playerSession = game.getPlayer(player);
 		if (playerSession == null){
-			throw new NotFoundException("No such player");
+			throw new HTTPException.NotFoundException("No such player");
 		}
 		return playerSession;
 	}
 
-	public int shoot(Integer id, String player, Integer x, Integer y) throws GameLogicException {
+	public int shoot(Integer id, String player, Integer x, Integer y) throws WebApplicationException {
 		Game game = games.get(id);
 		if (game == null){
-			throw new NotFoundException("No such game");
+			throw new HTTPException.NotFoundException("No such game");
 		}
 		PlayerGameSession playerSession = game.getPlayer(player);
 		if (playerSession == null){
-			throw new NotFoundException("No such player");
+			throw new HTTPException.NotFoundException("No such player");
 		}
 		if (!GameStatus.RUNNING.equals(game.getStatus())){
-			throw new GameLogicException("Game not running, cannot bomb");			
+			throw new HTTPException.ForbiddenException("Game not running, cannot bomb");			
 		}
 		
 		if (!playerSession.getName().equalsIgnoreCase(game.getCurrentPlayer())){
-			throw new GameLogicException("Not your turn, let "+game.getCurrentPlayer()+" to play");
+			throw new HTTPException.NotFoundException("Not your turn, let "+game.getCurrentPlayer()+" to play");
 		}
 		if (game.getSettings().getGridSize()< x.intValue() || game.getSettings().getGridSize()< y.intValue()){
-			throw new GameLogicException("bomb coordinates out of grid");
+			throw new HTTPException.BadRequestException("bomb coordinates out of grid");
 		}
 		
-		int hitCount = game.shoot(x,y, player);
+		int hitCount;
+		try {
+			hitCount = game.shoot(x,y, player);
+		} catch (GameLogicException e) {
+			throw new HTTPException.ForbiddenException("shooting failed", e);
+		}
 		return hitCount;
 	}
 
-	public List<PlayerRank> getPlayerRanks(Integer id) {
+	public List<PlayerRank> getPlayerRanks(Integer id) throws HTTPException.NotFoundException{
 		Game game = games.get(id);
 		if (game == null) {
-			throw new NotFoundException("No such game");
+			throw new HTTPException.NotFoundException("No such game");
 		}
 		List<PlayerGameSession> players = game.getPlayers();
 
@@ -132,12 +143,16 @@ public class GameService {
 		return ranks;
 	}
 
-	public GameConfiguration initAutomaticGame(Integer id) throws ServiceException {
+	public GameConfiguration initAutomaticGame(Integer id, Integer delay) throws WebApplicationException {
 		Game game = games.get(id);
 		if (game == null) {
-			throw new NotFoundException("No such game");
+			throw new HTTPException.NotFoundException("No such game");
 		}
-		game.startAutomaticGame();
+		try {
+			game.startAutomaticGame(delay);
+		} catch (ServiceException e) {
+			throw new HTTPException.ForbiddenException(e);
+		}
 		
 		return game.getSettings();
 	}

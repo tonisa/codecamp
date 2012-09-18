@@ -1,12 +1,9 @@
 package ee.elisa.gamechannel;
 
-import org.apache.log4j.xml.DOMConfigurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.AbstractModule;
-import com.google.inject.Scopes;
-import com.google.inject.name.Names;
 
 import ee.elisa.gamechannel.service.GameService;
 import ee.elisa.gamechannel.util.Random;

@@ -67,16 +67,14 @@ public class GameResource {
 
 	@GET
 	@Path("{game_id}/start")
-	public GameConfiguration startGame(@PathParam("game_id") Integer id)
-			throws NotFoundException, ServiceException {
+	public GameConfiguration startGame(@PathParam("game_id") Integer id){
 		return games.startGame(id);
 	}
 
 	@GET
 	@Path("{game_id}/auto")
-	public GameConfiguration initAutomaticGame(@PathParam("game_id") Integer id)
-			throws NotFoundException, ServiceException {
-		return games.initAutomaticGame(id);
+	public GameConfiguration initAutomaticGame(@PathParam("game_id") Integer id, @QueryParam("delay") Integer delay){
+		return games.initAutomaticGame(id, delay);
 	}
 	
 	@GET
@@ -116,10 +114,8 @@ public class GameResource {
 		return games.getListing(GameStatus.FINISHED);
 	}
 
-	// generate and return grid??
 	@GET
 	@Path("{game_id}/join/{player}")
-	// @Produces(MediaType.TEXT_PLAIN)
 	public ShipsSettings joinGame(@PathParam("game_id") Integer id,
 			@PathParam("player") String player) throws ServiceException,
 			PlayerGridException {
@@ -149,7 +145,6 @@ public class GameResource {
 
 	@GET
 	@Path("{game_id}/player/{player}/bomb")
-	// @Produces(MediaType.TEXT_PLAIN)
 	public BombingResult bombSimple(@PathParam("game_id") Integer id,
 			@PathParam("player") String player, @QueryParam("x") Integer x,
 			@QueryParam("y") Integer y) throws ServiceException,

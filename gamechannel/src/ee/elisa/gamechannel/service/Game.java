@@ -17,7 +17,7 @@ import ee.elisa.gamechannel.model.GameStatus;
 import ee.elisa.gamechannel.model.PlayerRank;
 import ee.elisa.gamechannel.model.ShipsSettings;
 import ee.elisa.gamechannel.util.Random;
-
+ 
 public class Game extends TimerTask {
 
 	protected GameConfiguration settings;
@@ -27,6 +27,7 @@ public class Game extends TimerTask {
 	private Timer timer;
 	private int x;
 	private Random rnd;
+	private int delay;
 
 	public Game(GameConfiguration settings) {
 		automaticPlay = false;
@@ -184,8 +185,23 @@ public class Game extends TimerTask {
 		return ranks;
 	}
 
-	public void startAutomaticGame() throws ServiceException {
+	protected void setDelay( Integer delay ){
+		if (delay==null){
+			delay = 100;
+		}
+		
+		if (delay.intValue() < 100){
+			this.delay = 100;
+		} else if (delay.intValue() > 1000){
+			this.delay = 1000;
+		} else {
+			this.delay = delay.intValue();
+		}
+	}
+	
+	public void startAutomaticGame(Integer delay) throws ServiceException {
 		if (automaticPlay){
+			setDelay(delay);
 			return;
 		}
 		
@@ -194,12 +210,15 @@ public class Game extends TimerTask {
 		automaticPlay = true;
 		rnd = new Random();
 		timer = new Timer();
-		timer.scheduleAtFixedRate(this, 2000, 100);
+		setDelay(delay);
+		timer.scheduleAtFixedRate(this, 2000, this.delay);
+		System.out.println("Starting autoplay with delay of "+this.delay+" ms");
 	}
 
 	// body for timer task
 	@Override
 	public void run() {
+		
 		if (GameStatus.FINISHED.equals(settings.status) && timer != null) {
 			System.out.println("Closing autoplay");
 			this.cancel();
