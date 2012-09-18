@@ -50,7 +50,7 @@ text-align: center;
                   Games
               </li>
               <li data-theme="c" class="ff">
-              	<a href="#info" data-transition="pop" data-rel="dialog">
+              	<a href="#info" data-transition="pop" data-rel="dialog" onClick="readme()">
                       Welcome to Online Battleship 1942 
                       <span class="ui-li-count">
                           Elisa Codecamp 2012
@@ -83,7 +83,7 @@ text-align: center;
         <div data-role="header" data-theme="e">
                 <h1>Information / rules / API</h1>
         </div>
-        <div data-role="content" data-theme="d">
+        <div data-role="content" data-theme="d" id="readme">
                 Here will be detailed information about the game, rules and how to win!
         </div>
         <div data-role="footer">
@@ -118,12 +118,12 @@ text-align: center;
   
 <div data-role="page" id="battle">
     <div data-theme="b" data-role="header">
-    <a href="#page1" data-transition="flip">Back to home...</a>
+    <a href="#page1" data-transition="flip" onClick="if(source!=null)source.close();">Back to home...</a>
         <h3>
             ONLINE BATTLESHIP 1942
         </h3>
     </div>
-    <div data-role="content" style="padding: 15px">
+    <div data-role="content" style="padding: 15px;">
     
 <div class="ui-grid-d" id="grid">
     <div class="ui-block-a">
@@ -141,13 +141,53 @@ text-align: center;
      	<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
      </table></fieldset>
     </div>
+    <div class="ui-block-b">
+     <fieldset><legend><b>Player name: Gamer status</b></legend>
+     <table>
+     	<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+     	<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+     	<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+     	<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+     	<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+     	<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+     	<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+     	<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+     	<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+     	<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+     </table></fieldset>
+    </div>
+    <div class="ui-block-c">
+     <fieldset><legend><b>Player name: Gamer status</b></legend>
+     <table>
+     	<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+     	<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+     	<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+     	<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+     	<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+     	<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+     	<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+     	<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+     	<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+     	<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+     </table></fieldset>
+    </div>
+    <div class="ui-block-d">
+     <fieldset><legend><b>Player name: Gamer status</b></legend>
+     <table>
+     	<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+     	<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+     	<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+     	<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+     	<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+     	<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+     	<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+     	<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+     	<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+     	<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+     </table></fieldset>
+    </div>
 </div>
 
-    </div>
-    <div data-theme="b" data-role="footer" data-position="fixed">
-        <h3>
-            &copy; Elisa CodeCamp 2012
-        </h3>
     </div>
   </div>
   

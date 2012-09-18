@@ -7,6 +7,13 @@
                 ee.elisa.gamechannel.service.*,
                 ee.elisa.gamechannel.model.*,
                 com.google.inject.*"
+%><%!
+public static String getTime( Date it) {
+    SimpleDateFormat sdfDate = new SimpleDateFormat("HH:mm:ss");
+    String strDate = sdfDate.format(it);
+    return strDate;
+}
+
 %><%
 Injector inj = (Injector) pageContext.getServletContext().getAttribute(Injector.class.getName());
 GameService games = inj.getInstance(GameService.class);
@@ -21,20 +28,27 @@ if( request.getParameter( "id") != null){
   Game game = games.getGameById(id);
   out.write("id: <b>"+new Date()+"</b>\n\n");
   StringBuffer data = new StringBuffer();
-  data.append( "<h1>"+game.getSettings().id+" - "+game.getSettings().name+" ("+game.getSettings().gridSize+")</h1>");
-  int i = -1;
+    
+  data.append( "<button align=left onClick=\"if(source!=null)source.close();\">"+game.getSettings().id+" - "+game.getSettings().name+" ("+game.getSettings().gridSize+") <hr/><table nowrap><tr><th>#</th><th>Name</th><th>Lost</th><th>Hits</th><th>Loss</th></tr>");
+  int j = 0;
+  for( int i = games.getPlayerRanks(id).size()-1; i >= 0; i--) { j++;
+   PlayerRank rank = games.getPlayerRanks(id).get(i);
+   data.append( "<tr><td>"+j+"</td><td>" + rank.getName() + "</td><td>" + (rank.getTimeLost()!=null?getTime( rank.getTimeLost()):"VICTORY") + "</td><td>" + rank.getEarnedHits() + "</td><td>" + rank.getHits() + "</td>");
+  }
+  data.append( "</table></button>");
+  int i = 0;
   for( PlayerGameSession player : game.getPlayers()){
   	  i++;
   	  if( i > 4){
-  	  	i = -1;
+  	  	i = 0;
   	  }
 	  data.append( "<div class=\"ui-block-"+(char)('a'+i)+"\">");
-	  data.append( "<fieldset><legend><b>"+player.getName()+", "+(player.hasShipsAlive()?"In battle":"GAME OVER")+". Hits: "+player.getEarnedHits()+"</b></legend>");
+	  data.append( "<fieldset><legend><b>"+player.getName()+", "+(player.hasShipsAlive()?"In battle":"GAME OVER")+"</b></legend>");
 	  data.append( "<table>");
 	  for( int y = 0; y < game.getSettings().gridSize; y++){
 	  	data.append( "<tr>");
 	  	for( int x = 0; x < game.getSettings().gridSize; x++){
-	   		data.append( "<td>"+(player.grid.grid[y][x]>0 ? ""+player.grid.grid[y][x] : "")+"</td>");
+	   		data.append( "<td"+(player.grid.HIT == player.grid.grid[y][x]?" bgcolor=black": (player.grid.grid[y][x]>0?" bgcolor=yellow":""))+">"+(player.grid.grid[y][x]>0 ? ""+player.grid.grid[y][x] : "")+"</td>");
 	  	}
 	  	data.append( "</tr>");
 	  }

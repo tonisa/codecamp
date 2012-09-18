@@ -1,4 +1,6 @@
 //implement JSON.stringify serialization
+var source;
+
 JSON.stringify = JSON.stringify || function (obj) {
     var t = typeof (obj);
     if (t != "object" || obj === null) {
@@ -39,8 +41,17 @@ function init(status){
 
 function show(id){
 	$('#grid').html("");
-	var source = new EventSource('push.jsp?id='+id);
+	if( source != null){
+		source.close();
+	}
+	source = new EventSource('push.jsp?id='+id);
 	source.onmessage = function(e) {
 		$('#grid').html(e.data);
 	}; 
+}
+
+function readme(){
+	$.get('README.txt', function(data) {
+		$('#readme').html('<pre>'+data+'</pre>');
+	});
 }
