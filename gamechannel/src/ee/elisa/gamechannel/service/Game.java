@@ -55,6 +55,9 @@ public class Game extends TimerTask {
 				settings.gridSize);
 
 		if (ships == null) {
+			if (settings.gridSize>15){
+				throw new ServiceException("Cannot do automatic ships placement, grid size bigger than 15");
+			}
 			session.createRandomShips();
 		} else {
 			session.addShips(ships.getShips());
@@ -148,6 +151,8 @@ public class Game extends TimerTask {
 				settings.status = GameStatus.FINISHED;
 				settings.finished = new Date();
 			}
+		} else {
+			System.out.println("Hit to "+hitCount+" ships!");			
 		}
 		
 		session.addEarnedHits(hitCount);

@@ -3,6 +3,7 @@ package ee.elisa.gamechannel.service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -123,10 +124,10 @@ public class GameService {
 
 		Collections.sort(players, new PlayerGameSessionComparator());
 
-		List<PlayerRank> ranks = new ArrayList<PlayerRank>();
-		int rank = 1;
+		LinkedList<PlayerRank> ranks = new LinkedList<PlayerRank>();
+		int rank = players.size();
 		for (PlayerGameSession player : players) {
-			ranks.add(new PlayerRank(player, rank++));
+			ranks.addFirst(new PlayerRank(player, rank--));
 		}
 		return ranks;
 	}

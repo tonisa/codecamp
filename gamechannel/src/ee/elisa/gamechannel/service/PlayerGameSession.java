@@ -91,13 +91,18 @@ public class PlayerGameSession {
 
 			for (int count = Settings.getShipCount(grid.getSize(), shipSize); count > 0; count--) {
 
-				for (boolean done = false; done == false;) {
+				int tries = 0;
+				
+				while(true) {
 					try {
 						addShip(new PositionedShip(shipSize, rnd.getInt(0,
 								grid.size - 1), rnd.getInt(0, grid.size - 1),
 								rnd.getInt(0, 1) > 0 ? true : false));
-						done = true;
+						break;
 					} catch (PlayerGridException e) {
+						if (++tries > 100){
+							throw new PlayerGridException("Automatic ships placement failed, "+tries+" tries for size "+shipSize);
+						}
 						// try another point
 						System.out.println(e.getMessage());
 					}
