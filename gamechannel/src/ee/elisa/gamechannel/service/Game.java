@@ -99,7 +99,7 @@ public class Game extends TimerTask {
 		return null;
 	}
 
-	private String nextPlayer() {
+	private synchronized String nextPlayer() {
 		PlayerGameSession sess = null;
 		String current = null;
 
@@ -138,10 +138,11 @@ public class Game extends TimerTask {
 					"Cannot shoot, game not in RUNNING state");
 		}
 		
-		PlayerGameSession session = getPlayer(player);		
+		PlayerGameSession session = getPlayer(player);
+		session.registerPlayerMove();
 		for (Entry<String, PlayerGameSession> entry : players.entrySet()) {
-			PlayerGameSession gamer = entry.getValue();			
-			if (!player.equalsIgnoreCase(gamer.getName()) && gamer.shootAtPlayer(x,y)){
+			PlayerGameSession enemy = entry.getValue();			
+			if (!player.equalsIgnoreCase(enemy.getName()) && enemy.shootAtPlayer(x,y)){
 				hitCount++;
 			}
 		}

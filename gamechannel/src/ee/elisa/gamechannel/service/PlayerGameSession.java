@@ -34,7 +34,9 @@ public class PlayerGameSession {
 	@XmlElement
 	protected boolean hasShipsAlive;	
 	@XmlElement
-	protected Date timeLost;
+	protected Date timeLost;	
+	@XmlElement
+	private int playerMoves;
 
 	public PlayerGameSession(){		
 	}
@@ -144,7 +146,7 @@ public class PlayerGameSession {
 			throw e;
 		}
 
-		System.out.println("Ships collection verified!");
+		System.out.println("Ships collection verified, hitsPossible="+hitsPossible);
 		setShipsPlaced();
 		setError(false);
 	}
@@ -162,7 +164,7 @@ public class PlayerGameSession {
 	}
 
 	public boolean shootAtPlayer(int x, int y) {
-		boolean hit =  grid.shootAt(x,y);
+		boolean hit = grid.shootAt(x,y);
 		if (hit){
 			increaseGotHitsBy(1);
 		}
@@ -187,10 +189,13 @@ public class PlayerGameSession {
 
 	private void increaseGotHitsBy(int count) {
 		this.gotHits += count;
+
+		System.out.println(playerName+" got hit, total hits "+gotHits);
 		
 		if (gotHits>=hitsPossible){
-			hasShipsAlive = false;
 			setTimeLost(new Date());
+			hasShipsAlive = false;
+			System.out.println(playerName+" out of game!");
 		}
 	}
 	
@@ -204,5 +209,18 @@ public class PlayerGameSession {
 
 	public void setTimeLost(Date timeLost) {
 		this.timeLost = timeLost;
+	}
+
+	public void registerPlayerMove() {
+		this.setPlayerMoves(this.getPlayerMoves() + 1);
+		
+	}
+
+	public int getPlayerMoves() {
+		return playerMoves;
+	}
+
+	public void setPlayerMoves(int playersMoves) {
+		this.playerMoves = playersMoves;
 	}
 }

@@ -26,14 +26,23 @@ if( request.getParameter( "id") != null){
  response.addHeader("Connection","keep-alive");
   Integer id = Integer.parseInt( request.getParameter( "id"));
   Game game = games.getGameById(id);
+  String topStatus;
+  if (GameStatus.FINISHED.equals(game.getSettings().status)){
+   	topStatus = "WINNER";
+  } else if (GameStatus.RUNNING.equals(game.getSettings().status)){
+   	topStatus = "Playing";
+  } else {
+   	topStatus = "Player";
+  }
+  
   out.write("id: <b>"+new Date()+"</b>\n\n");
   StringBuffer data = new StringBuffer();
     
-  data.append( "<button align=left onClick=\"if(source!=null)source.close();\">"+game.getSettings().id+" - "+game.getSettings().name+" ("+game.getSettings().gridSize+") <hr/><table nowrap><tr><th>#</th><th>Name</th><th>Lost</th><th>Hits</th><th>Loss</th></tr>");
+  data.append( "<button align=left onClick=\"if(source!=null)source.close();\">"+game.getSettings().id+" - "+game.getSettings().name+" ("+game.getSettings().gridSize+") <hr/><table nowrap><tr><th>#</th><th>Name</th><th>Status</th><th>Hits</th><th>Losses</th></th><th>Moves</th></tr>");
   int j = 0;
   for( int i = 0; i < games.getPlayerRanks(id).size(); i++) {
    PlayerRank rank = games.getPlayerRanks(id).get(i);
-   data.append( "<tr><td>"+(i+1)+"</td><td>" + rank.getName() + "</td><td>" + (rank.getTimeLost()!=null?getTime( rank.getTimeLost()):"VICTORY") + "</td><td>" + rank.getEarnedHits() + "</td><td>" + rank.getHits() + "</td>");
+   data.append( "<tr><td>"+(i+1)+"</td><td>" + rank.getName() + "</td><td>" + (rank.getTimeLost()!=null?("Lost "+getTime(rank.getTimeLost())):topStatus) + "</td><td>" + rank.getEarnedHits() + "</td><td>" + rank.getHits() + "</td><td>" + rank.getMoves() + "</td></tr>");
   }
   data.append( "</table></button>");
   int i = 0;

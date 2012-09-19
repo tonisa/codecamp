@@ -15,6 +15,7 @@ public class PlayerRank {
 	private Date timeLost;
 	private int earnedHits;
 	private int hits;
+	private int moves;
 
 	public PlayerRank() {
 	}
@@ -26,6 +27,7 @@ public class PlayerRank {
 		setTimeLost(player.getTimeLost());
 		setEarnedHits(player.getEarnedHits());
 		setHits(player.getHits());
+		setMoves(player.getPlayerMoves());
 	}
 
 	public String getName() {
@@ -74,6 +76,14 @@ public class PlayerRank {
 
 	public void setHits(int hits) {
 		this.hits = hits;
+	}
+
+	public int getMoves() {
+		return moves;
+	}
+
+	public void setMoves(int moves) {
+		this.moves = moves;
 	}
 
 }
