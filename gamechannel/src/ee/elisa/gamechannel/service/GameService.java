@@ -16,7 +16,7 @@ import ee.elisa.gamechannel.model.GameConfiguration;
 import ee.elisa.gamechannel.model.GameStatus;
 import ee.elisa.gamechannel.model.PlayerRank;
 import ee.elisa.gamechannel.model.ShipsSettings;
-import ee.elisa.gamechannel.rest.HTTPException;
+import ee.elisa.gamechannel.rest.RESTException;
 
 public class GameService {
 
@@ -39,20 +39,20 @@ public class GameService {
 	public GameConfiguration startGame(Integer id) throws WebApplicationException {
 		Game game = games.get(id);
 		if (game == null){
-			throw new HTTPException.NotFoundException("Game id "+id+" not valid");
+			throw new RESTException.NotFoundException("Game id "+id+" not valid");
 		}		
 		try {
 			game.startGame();
 		} catch (ServiceException e) {
-			throw new HTTPException.ForbiddenException("Game cannot be started",e);
+			throw new RESTException.ForbiddenException("Game cannot be started",e);
 		}		
 		return game.settings;
 	}
 
-	public Game getGameById(Integer id) throws HTTPException.NotFoundException {
+	public Game getGameById(Integer id) throws RESTException.NotFoundException {
 		Game game = games.get(id);
 		if (game == null){
-			throw new HTTPException.NotFoundException("Game id "+id+" not valid");
+			throw new RESTException.NotFoundException("Game id "+id+" not valid");
 		}		
 		
 		return game;
@@ -74,25 +74,25 @@ public class GameService {
 	public void joinGame(Integer gameId, String player, ShipsSettings ships) throws WebApplicationException {
 		Game game = games.get(gameId);
 		if (game == null){
-			throw new HTTPException.NotFoundException("Game id "+gameId+" not valid");
+			throw new RESTException.NotFoundException("Game id "+gameId+" not valid");
 		}		
 		try {
 			game.addPlayer(player, ships);
 		} catch (ServiceException e) {
-			throw new HTTPException.ForbiddenException("Player already in game", e);
+			throw new RESTException.ForbiddenException("Player already in game", e);
 		} catch (PlayerGridException e) {
-			throw new HTTPException.ForbiddenException(e);
+			throw new RESTException.ForbiddenException(e);
 		}
 	}
 
-	public PlayerGameSession getGamePlayer(Integer id, String player) throws HTTPException.NotFoundException {
+	public PlayerGameSession getGamePlayer(Integer id, String player) throws RESTException.NotFoundException {
 		Game game = games.get(id);
 		if (game == null){
-			throw new HTTPException.NotFoundException("No such game");
+			throw new RESTException.NotFoundException("No such game");
 		}
 		PlayerGameSession playerSession = game.getPlayer(player);
 		if (playerSession == null){
-			throw new HTTPException.NotFoundException("No such player");
+			throw new RESTException.NotFoundException("No such player");
 		}
 		return playerSession;
 	}
@@ -100,36 +100,36 @@ public class GameService {
 	public int shoot(Integer id, String player, Integer x, Integer y) throws WebApplicationException {
 		Game game = games.get(id);
 		if (game == null){
-			throw new HTTPException.NotFoundException("No such game");
+			throw new RESTException.NotFoundException("No such game");
 		}
 		PlayerGameSession playerSession = game.getPlayer(player);
 		if (playerSession == null){
-			throw new HTTPException.NotFoundException("No such player");
+			throw new RESTException.NotFoundException("No such player");
 		}
 		if (!GameStatus.RUNNING.equals(game.getStatus())){
-			throw new HTTPException.ForbiddenException("Game not running, cannot bomb");			
+			throw new RESTException.ForbiddenException("Game not running, cannot bomb");			
 		}
 		
 		if (!playerSession.getName().equalsIgnoreCase(game.getCurrentPlayer())){
-			throw new HTTPException.NotFoundException("Not your turn, let "+game.getCurrentPlayer()+" to play");
+			throw new RESTException.NotFoundException("Not your turn, let "+game.getCurrentPlayer()+" to play");
 		}
 		if (game.getSettings().getGridSize()< x.intValue() || game.getSettings().getGridSize()< y.intValue()){
-			throw new HTTPException.BadRequestException("bomb coordinates out of grid");
+			throw new RESTException.BadRequestException("bomb coordinates out of grid");
 		}
 		
 		int hitCount;
 		try {
 			hitCount = game.shoot(x,y, player);
 		} catch (GameLogicException e) {
-			throw new HTTPException.ForbiddenException("shooting failed", e);
+			throw new RESTException.ForbiddenException("shooting failed", e);
 		}
 		return hitCount;
 	}
 
-	public List<PlayerRank> getPlayerRanks(Integer id) throws HTTPException.NotFoundException{
+	public List<PlayerRank> getPlayerRanks(Integer id) throws RESTException.NotFoundException{
 		Game game = games.get(id);
 		if (game == null) {
-			throw new HTTPException.NotFoundException("No such game");
+			throw new RESTException.NotFoundException("No such game");
 		}
 		List<PlayerGameSession> players = game.getPlayers();
 
@@ -146,12 +146,12 @@ public class GameService {
 	public GameConfiguration initAutomaticGame(Integer id, Integer delay) throws WebApplicationException {
 		Game game = games.get(id);
 		if (game == null) {
-			throw new HTTPException.NotFoundException("No such game");
+			throw new RESTException.NotFoundException("No such game");
 		}
 		try {
 			game.startAutomaticGame(delay);
 		} catch (ServiceException e) {
-			throw new HTTPException.ForbiddenException(e);
+			throw new RESTException.ForbiddenException(e);
 		}
 		
 		return game.getSettings();

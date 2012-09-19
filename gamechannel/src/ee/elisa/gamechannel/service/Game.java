@@ -153,7 +153,7 @@ public class Game extends TimerTask {
 				settings.finished = new Date();
 			}
 		} else {
-			System.out.println("Hit to "+hitCount+" ships!");			
+			System.out.println(player+" hits to "+hitCount+" ships!");			
 		}
 		
 		session.addEarnedHits(hitCount);
