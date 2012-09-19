@@ -31,9 +31,9 @@ if( request.getParameter( "id") != null){
     
   data.append( "<button align=left onClick=\"if(source!=null)source.close();\">"+game.getSettings().id+" - "+game.getSettings().name+" ("+game.getSettings().gridSize+") <hr/><table nowrap><tr><th>#</th><th>Name</th><th>Lost</th><th>Hits</th><th>Loss</th></tr>");
   int j = 0;
-  for( int i = games.getPlayerRanks(id).size()-1; i >= 0; i--) { j++;
+  for( int i = 0; i < games.getPlayerRanks(id).size(); i++) {
    PlayerRank rank = games.getPlayerRanks(id).get(i);
-   data.append( "<tr><td>"+j+"</td><td>" + rank.getName() + "</td><td>" + (rank.getTimeLost()!=null?getTime( rank.getTimeLost()):"VICTORY") + "</td><td>" + rank.getEarnedHits() + "</td><td>" + rank.getHits() + "</td>");
+   data.append( "<tr><td>"+(i+1)+"</td><td>" + rank.getName() + "</td><td>" + (rank.getTimeLost()!=null?getTime( rank.getTimeLost()):"VICTORY") + "</td><td>" + rank.getEarnedHits() + "</td><td>" + rank.getHits() + "</td>");
   }
   data.append( "</table></button>");
   int i = 0;
