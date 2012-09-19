@@ -34,7 +34,7 @@ public class PlayerGrid {
 				if (ship.isHorizontal()) {
 					canDraw(ship.getCornerX() + i, ship.getCornerY(),
 							ship.isHorizontal());
-					grid[ship.getCornerX() + i][ship.getCornerY()] = 1;
+					grid[ship.getCornerX() + i][ship.getCornerY()] = ship.getSize();
 				} else {
 					canDraw(ship.getCornerX(), ship.getCornerY() + i,
 							ship.isHorizontal());

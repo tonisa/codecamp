@@ -134,7 +134,7 @@ public class GameResource {
 	}
 
 	@GET
-	@Path("{game_id}/player/{player}")
+	@Path("{game_id}/players/{player}")
 	public PlayerStatus playerStatus(@PathParam("game_id") Integer id,
 			@PathParam("player") String player) throws ServiceException,
 			PlayerGridException {
