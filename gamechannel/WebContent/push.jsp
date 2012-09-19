@@ -38,7 +38,7 @@ if( request.getParameter( "id") != null){
   out.write("id: <b>"+new Date()+"</b>\n\n");
   StringBuffer data = new StringBuffer();
     
-  data.append( "<button align=left onClick=\"if(source!=null)source.close();\">"+game.getSettings().id+" - "+game.getSettings().name+" ("+game.getSettings().gridSize+") <hr/><table nowrap><tr><th>#</th><th>Name</th><th>Status</th><th>Hits</th><th>Losses</th></th><th>Moves</th></tr>");
+  data.append( "<button align=left onClick=\"if(source!=null)source.close();\">Game '"+game.getSettings().name+"' (id "+game.getSettings().id+", size "+game.getSettings().gridSize+")<br>"+game.getCurrentPlayer()+" bombing <hr/><table nowrap><tr><th>#</th><th>Name</th><th>Status</th><th>Hits</th><th>Losses</th></th><th>Moves</th></tr>");
   int j = 0;
   for( int i = 0; i < games.getPlayerRanks(id).size(); i++) {
    PlayerRank rank = games.getPlayerRanks(id).get(i);
