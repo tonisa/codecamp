@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="gamechannel" default="build-live" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
+
+    <!-- Load properties from files. -->
+	<property file="build-local.properties" description="Local build configuration overrides build.properties"/>
+    <loadproperties srcFile="build.properties"/>
+
+    <!-- Info -->
+    <target name="info">
+        <echo message="Building with java ${ant.java.version} (${java.runtime.version}); using ${ant.version}"/>
+    </target>
+
+    <!-- Create all needed directories. -->
+    <target name="init">
+        <mkdir dir="${dir.classes}"/>
+        <mkdir dir="${dir.build}"/>
+    </target>
+	
+    <target name="ivy-install">
+        <mkdir dir="${dir.lib}/dev" />
+        <get src="http://repo1.maven.org/maven2/org/apache/ivy/ivy/${ivy.version}/ivy-${ivy.version}.jar" dest="${dir.lib}/dev/ivy-${ivy.version}.jar" usetimestamp="true" />
+    </target>
+
+    <target name="ivy-init" depends="ivy-install">
+        <taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpath="${dir.lib}/dev/ivy-${ivy.version}.jar" />
+        <ivy:resolve/>
+    </target>
+
+    <!-- Ivy task to retrieve required dependencies. -->
+    <target name="libs-retrieve" depends="ivy-init">
+        <!-- Resolv project dependencies. -->
+        <ivy:retrieve conf="default"/>
+        <ivy:retrieve pattern="${dir.lib}/[conf]/[originalname].[ext]"/>
+    </target>
+
+    <target name="libs-clean">
+        <delete dir="${dir.lib}/test"/>
+        <delete dir="${dir.lib}/dev" excludes="ivy*.jar"/>
+        <delete dir="${dir.lib}" excludes="dev/*"/>
+    </target>
+
+    <!-- Classpaths -->
+    <path id="classpath">
+        <fileset dir="${dir.lib}" includes="*.jar"/>
+    </path>
+
+    <path id="dev-classpath"> 
+        <fileset dir="${dir.lib}" includes="*.jar"/>
+        <fileset dir="${dir.lib}/dev" includes="*.jar"/>
+    </path>
+
+    <path id="default-classpath"> 
+        <fileset dir="${dir.lib}/default" includes="*.jar"/>
+    </path>
+	
+    <path id="test-classpath"> 
+        <fileset dir="${dir.lib}" includes="**/*.jar"/>
+    </path>
+	
+    <!-- Clean -->
+    <target name="clean">
+        <delete quiet="yes" dir="${dir.build}"/>
+    </target> 
+    
+    <!-- Compile all Java files-->
+    <target name="compile" depends="init">
+        <javac source="${javac.source.version}"
+               target="${javac.classes.version}"
+               compiler="${javac.compiler}"
+               destdir="${dir.classes}"
+               encoding="${javac.encoding}"
+               debug="${javac.debug}"
+               debuglevel="${javac.debuglevel}"
+               optimize="${javac.optimize}"
+               includeantruntime="false">
+            <classpath>
+                <path refid="classpath"/>
+                <path refid="default-classpath"/>
+            </classpath>
+            <src path="${dir.src}"/>
+        </javac>
+    </target>
+
+    <target name="compile-test" depends="compile">
+        <javac source="${javac.source.version}"
+               target="${javac.classes.version}"
+               compiler="${javac.compiler}"
+               destdir="${dir.classes}"
+               encoding="${javac.encoding}"
+               debug="${javac.debug}"
+               debuglevel="${javac.debuglevel}"
+               optimize="${javac.optimize}"
+               includeantruntime="false">
+            <classpath>
+                <path refid="classpath"/>
+                <path refid="dev-classpath"/>
+                <path refid="test-classpath"/>
+            </classpath>
+            <src path="${dir.test}"/>
+        </javac>
+    </target>
+
+    <target name="copy-resources">
+        <copy file="WebContent/WEB-INF/web.xml" todir="${dir.classes}"/>
+    </target>
+
+    <!-- War -->
+    <target name="war" depends="offer-resolve, compile, copy-resources">
+    	
+    	<mkdir dir="${ivy.distrib.dir}/wars"/>
+    	
+    	<manifest file="${ivy.distrib.dir}/wars/MANIFEST.MF">
+    		<attribute name="Module-Version" value="${revision}"/>
+    	</manifest>
+    	
+        <war warfile="${ivy.distrib.dir}/wars/${project.name}.war" needxmlfile="false" manifest="${ivy.distrib.dir}/wars/MANIFEST.MF">
+            <zipfileset dir="${dir.lib}/default" prefix="WEB-INF/lib">
+                <include name="*.jar" />
+            </zipfileset>
+
+            <zipfileset dir="${dir.classes}" prefix="WEB-INF/classes">
+                <include name="**/*.class" />
+            </zipfileset>
+            <zipfileset dir="${dir.classes}" prefix="WEB-INF">
+                <include name="web.xml"/>
+            </zipfileset>
+         </war>
+    	
+    	 <delete file="${ivy.distrib.dir}/wars/MANIFEST.MF"/>
+    </target>
+
+    <target name="offer-resolve" depends="ivy-init">
+        <ivy:resolve conf="default"/>
+    	<ivy:deliver />
+    </target>
+    	  	
+    <target name="offer-pom" depends="offer-resolve">
+        <ivy:makepom ivyfile="${ivy.distrib.dir}/ivys/ivy-${revision}.xml" artifactpackaging="jar" pomfile="${ivy.distrib.dir}/poms/${ivy.module}-${revision}.pom">
+            <mapping conf="default" scope="compile"/>
+        </ivy:makepom>
+    </target>
+
+    <target name="publish-shared-offer" depends="clean, build-live, offer-pom">
+    	<ivy:publish resolver="shared" forcedeliver="true" overwrite="true" publishivy="true" module="offer" />
+    </target>
+	
+	<target name="make-version" depends="clean, build-live, offer-pom">
+		<ivy:publish resolver="shared-publish" forcedeliver="true" overwrite="true" publishivy="true" module="offer" />
+	</target>
+
+	<target name="make-snapshot" depends="clean, build-live, offer-pom">
+		<echo message="Building revision ${revision}, use -Drevision=xxx to override" />
+
+		<ivy:publish resolver="snapshot-publish" forcedeliver="true" overwrite="true" publishivy="true" module="offer" />
+	</target>
+	
+    <target name="publish-shared" depends="publish-shared-offer"/>
+
+    <target name="publish-local-offer" depends="clean, build-live, offer-pom">
+        <ivy:publish resolver="local" forcedeliver="true" overwrite="true" publishivy="true" module="offer"/>
+    </target>
+	
+	<target name="publish-local" depends="publish-local-offer"/>
+
+    <!-- Build live --> 
+    <target name="build-live" depends="info, war"/>
+
+	<target name="deploy">
+		<taskdef resource="cargo.tasks">
+		  	<classpath refid="dev-classpath"/>
+		</taskdef>
+		
+		<cargo containerId="jetty8x" action="redeploy" type="remote" >
+			<configuration type="runtime">
+			    <property name="cargo.hostname" value="172.17.57.157"/>
+			    <property name="cargo.servlet.port" value="8080"/>
+			    <property name="cargo.remote.username" value="test"/>
+			    <property name="cargo.remote.password" value="test"/>
+			    <deployable type="war" file="${dir.build}/wars/offer-${revision}.war">
+					<property name="context" value="offer"/>
+			    </deployable>
+			</configuration>
+		</cargo>
+	</target>
+		
+</project>
